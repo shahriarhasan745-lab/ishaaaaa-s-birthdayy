@@ -1,53 +1,42 @@
-// Slider Functionality
 const slider = document.querySelector('.slider');
 
 function activate(e) {
-    const items = document.querySelectorAll('.item');
-    
-    // Using closest() to reliably catch clicks on ion-icons or their SVG elements
-    const nextBtn = e.target.closest('.next');
-    const prevBtn = e.target.closest('.prev');
-
-    if (nextBtn) {
-        slider.append(items[0]);
-    } else if (prevBtn) {
-        slider.prepend(items[items.length - 1]);
-    }
+  const items = document.querySelectorAll('.item');
+  e.target.matches('.next') && slider.append(items[0])
+  e.target.matches('.prev') && slider.prepend(items[items.length-1]);
 }
 
-document.addEventListener('click', activate, false);
+document.addEventListener('click',activate,false);
 
-
-// Audio Functionality
 function playWelcomeAudio(audioUrl) {
+    // Create the audio object
     const audio = new Audio(audioUrl);
-    audio.loop = true; // Song continuous loop-e cholbe
-
-    // Attempt to autoplay immediately when page loads
+    
+    // Attempt to autoplay immediately
     audio.play()
         .then(() => {
             console.log("Audio started playing successfully!");
         })
         .catch(error => {
-            console.log("Autoplay blocked by browser. Waiting for first user interaction...");
-
-            // Fallback: Play audio on the very first click/tap anywhere on the page
+            console.log("Autoplay blocked by browser. Waiting for user interaction...");
+            
+            // Fallback: Play audio on the very first click/tap on the page
             const playOnInteraction = () => {
                 audio.play()
                     .then(() => {
                         console.log("Audio played after user interaction.");
-                        // Remove listener so it doesn't trigger again on subsequent clicks
+                        // Remove the event listener so it doesn't trigger again on future clicks
                         document.removeEventListener('click', playOnInteraction);
                     })
                     .catch(e => console.error("Playback failed:", e));
             };
-
+            
             document.addEventListener('click', playOnInteraction);
         });
 }
 
-// Trigger audio on DOM Load
+// How to trigger it when the page loads:
 window.addEventListener('DOMContentLoaded', () => {
-    // Ricky Montgomery - Line Without a Hook track
+    // Replace this URL with the actual path to your audio file (mp3, wav, etc.)
     playWelcomeAudio('./Ricky_Montgomery_-_Line_Without_a_Hook_(mp3.pm).mp3');
 });
